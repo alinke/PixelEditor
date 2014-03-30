@@ -51,6 +51,7 @@ import de.devmil.common.ui.color.ColorSelectorActivity;
 
 public class PixelArtEditor extends PApplet implements TouchListener, Drawer {
 	private final static boolean DEBUG = false;
+	private boolean showPrompt = false;
 	
 	//int x = R;
 	
@@ -372,7 +373,8 @@ public class PixelArtEditor extends PApplet implements TouchListener, Drawer {
 //		} else { 
 //			art = new PixelData(21,12);
 //		}
-		art = PixelArt.makeFromShortside(this.width, this.height, 12);
+		//art = PixelArt.makeFromShortside(this.width, this.height, 12); //this was the original code but changed to make it default to 32x32 on new art
+		art = PixelArt.makeFromShortside(32, 32, 32);
 		art.setDrawer(this);
 		checkBounds();
 		final String lastopenedpath = StorageUtils.getLastOpenedFile(this);
@@ -586,7 +588,8 @@ public class PixelArtEditor extends PApplet implements TouchListener, Drawer {
 		        save();
 		        return true;
 		    case com.ledpixelart.pixelesque.R.id.main_menu_save_as:
-		        saveas();
+		        showPrompt = false;
+		    	saveas(showPrompt);
 		        return true;
 		    case com.ledpixelart.pixelesque.R.id.main_menu_export:
 		        export();
@@ -695,15 +698,20 @@ public class PixelArtEditor extends PApplet implements TouchListener, Drawer {
 	}
 	
 	public void save() {
-		if (art.name == null)
-			saveas();
+		if (art.name == null) {
+			showPrompt = false;
+			saveas(showPrompt);
+		}
 		else
 			save(art.name);
 	}
 	
 	public void save_pixel() {
-		if (art.name == null)
-			saveas(); //fix this later
+		if (art.name == null) {
+			showPrompt = true;
+			saveas(showPrompt); //fix this later
+			showToast("Tap P button again to send to PIXEL");
+		}
 		else
 			save_pixel(art.name);
 	}
@@ -715,8 +723,11 @@ public class PixelArtEditor extends PApplet implements TouchListener, Drawer {
 	}
 	
 	
-	public void saveas() {
+	public void saveas(boolean showPrompt) {
 		Dialogs.showSaveAs(this);
+		if (showPrompt == true)  
+			showToast("Tap P button again to send to PIXEL");
+			
 	}
 	
 	public void save(String name) {
@@ -781,6 +792,16 @@ public class PixelArtEditor extends PApplet implements TouchListener, Drawer {
 	public void about() {
 		Dialogs.showAboutDialog(this);
 	}
+	
+	 private void showToast(final String msg) {
+	 		runOnUiThread(new Runnable() {
+	 			@Override
+	 			public void run() {
+	 				Toast toast = Toast.makeText(PixelArtEditor.this, msg, Toast.LENGTH_LONG);
+	                toast.show();
+	 			}
+	 		});
+	 	}  
 	
 
 }

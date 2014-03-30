@@ -108,7 +108,7 @@
     
     <string name="bluetooth_pair">Blueooth Pairing</string>
     <string name="bluetooth_pairSummary">Shortcut to the Bluetooth settings screen. Pair to PIXEL using code: 4545 for PIXEL V1 or 0000 for PIXEL V2</string>
-    <string name="pixelWriteHello">After a short delay, your creation should be displaying on PIXEL. Tap the Back button to go back to the editor</string>
+    <string name="pixelWriteHello">After a short delay, your creation will display on PIXEL: LED ART. Tap the Back button to make additional edits.</string>
   
     <string name="noSleep">Disable Power Savings</string>    
     <string name="pref_noSleepDefault">false</string>

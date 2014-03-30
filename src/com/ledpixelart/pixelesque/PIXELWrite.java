@@ -8,6 +8,7 @@ import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
 import alt.android.os.CountDownTimer;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Matrix;
 import android.graphics.Bitmap.Config;
@@ -31,6 +33,7 @@ import android.widget.Button;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+@SuppressLint("ResourceAsColor")
 public class PIXELWrite extends IOIOActivity   {
 
    	private ioio.lib.api.RgbLedMatrix.Matrix KIND;  //have to do it this way because there is a matrix library conflict
@@ -72,16 +75,17 @@ public class PIXELWrite extends IOIOActivity   {
 	int appAlreadyStarted = 0;
 	private Button goBackButton;
 	private Button writeButton;
+	private TextView PixelStatusText_;
 	private Context ioio_context;
 	private boolean PIXELWriteImmediately_;
-//	matrix_ = ioio_.openRgbLedMatrix(KIND);
+	private int demoPIXEL = 0; //0 means normal pixel, 1 means demo 32 pixel (no writing), 2 means demo 64 pixel (no writing)
     
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //force only portrait mode
-        setContentView(R.layout.pixelwrite);
+        setContentView(R.layout.pixelwriterelative);
         
         //let's get the extra from the class that call us 
         Bundle extras = getIntent().getExtras();
@@ -113,6 +117,8 @@ public class PIXELWrite extends IOIOActivity   {
         
         setupInstructionsString = getResources().getString(R.string.setupInstructionsString);
         setupInstructionsStringTitle = getResources().getString(R.string.setupInstructionsStringTitle);
+        
+        PixelStatusText_ = (TextView) findViewById(R.id.PixelStatusText);
 		
         connectTimer = new ConnectTimer(30000,5000); //pop up a message if it's not connected by this timer
  		connectTimer.start(); //this timer will pop up a message box if the device is not found
@@ -143,7 +149,7 @@ public class PIXELWrite extends IOIOActivity   {
     	
     	writeButton = (Button) findViewById(R.id.pixelWriteButton);
     	
-    	if (PIXELWriteImmediately_ == false) {
+    	if (PIXELWriteImmediately_ == false) { //still show button even if we have a demo unit, we'll show a message to the user if they clicked it that this is a demo unit that normally would support writing
 	    	
 	    	writeButton.setOnClickListener(new OnClickListener() {
 	 
@@ -151,16 +157,21 @@ public class PIXELWrite extends IOIOActivity   {
 				public void onClick(View arg0) {
 	 
 					if (pixelHardwareID.substring(0,4).equals("PIXL")) {  
-	   		        	try {
-								int fps = 100; //it's a dummy since this is a still image but PIXEL needs an fps regardless
-	   		        			matrix_.interactive();
-								matrix_.writeFile(fps);
-		    		        	WriteImagetoMatrix();
-		    		        	matrix_.playFile();
-							} catch (ConnectionLostException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+	   		        	if (demoPIXEL == 0) {
+							try {
+									int fps = 100; //it's a dummy since this is a still image but PIXEL needs an fps regardless
+		   		        			matrix_.interactive();
+									matrix_.writeFile(fps);
+			    		        	WriteImagetoMatrix();
+			    		        	matrix_.playFile();
+								} catch (ConnectionLostException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+	   		        	}
+	   		        	else {
+	   		        		showToast("This PIXEL demo unit does not support writing");
+	   		        	}
 	   					
 	   		        }  
 	   		        else {
@@ -177,7 +188,7 @@ public class PIXELWrite extends IOIOActivity   {
 			});
     	}	
     	else { //we already in write immediate mode so hide this button
-    		writeButton.setVisibility(View.GONE);
+    		writeButton.setVisibility(View.INVISIBLE);
     	}
  
 	}
@@ -281,6 +292,12 @@ public void onActivityResult(int reqCode, int resCode, Intent data) //we'll go i
 	if (reqCode == 1)
 	{
 		//maybe do something here to keep the image showing after coming back from preferences, right now it's blanked out
+		try {
+			WriteImagetoMatrix();
+		} catch (ConnectionLostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 } 
 
@@ -294,47 +311,144 @@ private void setPreferences() //here is where we read the shared preferences int
  
  PIXELWriteImmediately_ = prefs.getBoolean("pref_pixelWriteImmediate", true);
  
- switch (matrix_model) {  //get this from the preferences
- case 0:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
-	 break;
- case 1:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
-	 break;
- case 2:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; //v1
-	 break;
- case 3:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2
-	 break;
- case 4:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
-	 break;
- case 5:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
-	 break;	 
- case 6:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
-	 break;	 	 
- case 7:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
-	 break;
- case 8:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; //horizontal
-	 break;	 
- case 9:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
-	 break;	 
- case 10:
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
-	 break;	 	 		 
- default:	    		 
-	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
- }
-     
- frame_ = new short [KIND.width * KIND.height];
- BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
+ if (demoPIXEL == 0) { //otherwise we will set this from ioiosetup once we know which matrix from teh firmware we need to default to
  
+	 switch (matrix_model) {  //get this from the preferences
+	 case 0:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
+		 break;
+	 case 1:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
+		 break;
+	 case 2:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; //v1
+		 break;
+	 case 3:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2
+		 break;
+	 case 4:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
+		 break;
+	 case 5:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
+		 break;	 
+	 case 6:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
+		 break;	 	 
+	 case 7:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
+		 break;
+	 case 8:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; //horizontal
+		 break;	 
+	 case 9:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
+		 break;	 
+	 case 10:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
+		 break;	 	 		 
+	 default:	    		 
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
+	 }
+ }
+ 
+ //***** we're hard setting the LED matrix if it's a pixel unit with demo firmware
+	if (pixelFirmware.substring(0,6).equals("PIXLD3")) {  
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32;
+		 demoPIXEL = 1;
+	}
+	//**************************************
+	
+	 //***** we're hard setting the LED matrix if it's a pixel unit with demo firmware
+	if (pixelFirmware.substring(0,6).equals("PIXLD6")) {  
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
+		 demoPIXEL = 2;
+		
+	}
+	//**************************************
+	//for a regular unit, the firmware will be PIXLXXXX where XXXX is something like 0006 
+	
+	 frame_ = new short [KIND.width * KIND.height];
+	 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
+
+ }
+
+private void setPreferencesMatrix() //here is where we read the shared preferences into variables
+{
+ SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);    
+ 
+ matrix_model = Integer.valueOf(prefs.getString(   //the selected RGB LED Matrix Type
+	        resources.getString(R.string.selected_matrix),
+	        resources.getString(R.string.matrix_default_value))); 
+ 
+ if (demoPIXEL == 0) { //otherwise we will set this from ioiosetup once we know which matrix from teh firmware we need to default to
+ 
+	 switch (matrix_model) {  //get this from the preferences
+	 case 0:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
+		 break;
+	 case 1:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
+		 break;
+	 case 2:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; //v1
+		 break;
+	 case 3:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2
+		 break;
+	 case 4:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
+		 break;
+	 case 5:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
+		 break;	 
+	 case 6:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
+		 break;	 	 
+	 case 7:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
+		 break;
+	 case 8:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; //horizontal
+		 break;	 
+	 case 9:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
+		 break;	 
+	 case 10:
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
+		 break;	 	 		 
+	 default:	    		 
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
+	 }
+	 
+	 frame_ = new short [KIND.width * KIND.height];
+	 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
+ }
+ else {
+ 
+ //***** we're hard setting the LED matrix if it's a pixel unit with demo firmware
+	if (pixelFirmware.substring(0,6).equals("PIXLD3")) {  
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32;
+		 demoPIXEL = 1;
+		 frame_ = new short [KIND.width * KIND.height];
+		 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
+	}
+	//**************************************
+	
+	 //***** we're hard setting the LED matrix if it's a pixel unit with demo firmware
+	if (pixelFirmware.substring(0,6).equals("PIXLD6")) {  
+		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
+		 demoPIXEL = 2;
+		 frame_ = new short [KIND.width * KIND.height];
+		 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
+	}
+	//**************************************
+	//for a regular unit, the firmware will be PIXLXXXX where XXXX is something like 0006 
+ }    
+ 
+// frame_ = new short [KIND.width * KIND.height];
+// BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
+
 }
 
 public class ConnectTimer extends CountDownTimer
@@ -383,25 +497,51 @@ private void showNotFound() {
   			IOIOLibVersion = ioio_.getImplVersion(v.IOIOLIB_VER);
   			//**********************************************************
   			
-  			if (appAlreadyStarted == 1) {  //this means we were already running and had a IOIO disconnect so show let's show what was in the matrix
-  				//matrix_.frame(frame_);  //this was causing a crash
-  				WriteImagetoMatrix();
+  			if (pixelFirmware.substring(0,6).equals("PIXLD3")) {  
+  				 demoPIXEL = 1;
   			}
+  			//**************************************
   			
-  			//WriteImagetoMatrix();
-  		 
-				if (pixelHardwareID.substring(0,4).equals("PIXL") && PIXELWriteImmediately_ == true) {  //checks if we have a v2 pixel and preferences tells us to write immediatly, we'll add a mod here for a demo firmware
-   		        	try {
-							int fps = 100; //it's a dummy since this is a still image but PIXEL needs an fps regardless
-   		        			matrix_.interactive();
-							matrix_.writeFile(fps);
-	    		        	WriteImagetoMatrix();
-	    		        	matrix_.playFile();
-						} catch (ConnectionLostException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-   					
+  			 //***** we're hard setting the LED matrix if it's a pixel unit with demo firmware
+  			if (pixelFirmware.substring(0,6).equals("PIXLD6")) {  
+  				 demoPIXEL = 2;
+  			}
+  			//**************************************
+  			
+  			 setText("Connected");
+  			 
+  			 //TO DO: Fix this later, having this here causing a disconnect on the first connection, not sure why
+  			 
+  			/*//***** we're hard setting the LED matrix if it's a pixel unit with demo firmware
+  			if (pixelFirmware.substring(0,6).equals("PIXLD3")) {  
+  				 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32;
+  				 demoPIXEL = 1;
+  				 frame_ = new short [KIND.width * KIND.height];
+  				 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
+  			}
+  			//**************************************
+  			
+  			 //***** we're hard setting the LED matrix if it's a pixel unit with demo firmware
+  			if (pixelFirmware.substring(0,6).equals("PIXLD6")) {  
+  				 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
+  				 demoPIXEL = 2;
+  				 frame_ = new short [KIND.width * KIND.height];
+  				 BitmapBytes = new byte[KIND.width * KIND.height *2]; //512 * 2 = 1024 or 1024 * 2 = 2048
+  			}
+  			//**************************************
+*/  		 
+			if (pixelHardwareID.substring(0,4).equals("PIXL") && PIXELWriteImmediately_ == true && demoPIXEL == 0) {  //checks if we have a v2 pixel and preferences tells us to write immediatly, we'll add a mod here for a demo firmware
+   		        
+						try {
+								int fps = 100; //it's a dummy since this is a still image but PIXEL needs an fps regardless
+	   		        			matrix_.interactive();
+								matrix_.writeFile(fps);
+		    		        	WriteImagetoMatrix();
+		    		        	matrix_.playFile();
+							} catch (ConnectionLostException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
    		        }  
    		        else {
    		        	 try {
@@ -411,11 +551,9 @@ private void showNotFound() {
 		    					e.printStackTrace();
 		    				}
    		        }
-  			
-  			appAlreadyStarted = 1;
   		}
 
-  	/*	@Override
+  		/*@Override
   		public void loop() throws ConnectionLostException {
   		
   			matrix_.frame(frame_); //writes whatever is in the frame_ byte array to the Pixel RGB Frame. 
@@ -430,6 +568,14 @@ private void showNotFound() {
 		showToast("You can use the IOIO Manager Android app to flash the correct firmware");
 		Log.e(LOG_TAG, "Incompatbile firmware!");
 		}
+	
+	@Override
+	public void disconnected() {   			
+			Log.i(LOG_TAG, "IOIO disconnected");
+			setTextDisconnected("Not Connected");
+			
+	}
+	
 	}
 
   	@Override
@@ -447,4 +593,26 @@ private void showNotFound() {
  			}
  		});
  	}  
+  	 
+  	private void setText(final String str) {
+		runOnUiThread(new Runnable() {
+			public void run() {
+				PixelStatusText_.setText(str);
+				PixelStatusText_.setBackgroundResource(R.color.green); 
+				PixelStatusText_.setTextColor(R.color.black);
+			}
+		});
+	}
+  	
+  	private void setTextDisconnected(final String str) {
+		runOnUiThread(new Runnable() {
+			public void run() {
+				PixelStatusText_.setText(str);
+				PixelStatusText_.setBackgroundResource(R.color.red); 
+				//PixelStatusText_.setTextColor(R.color.white);
+			}
+		});
+	}
+  	
+  	
 }

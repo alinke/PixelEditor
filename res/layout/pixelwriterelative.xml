@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <TextView
+        android:id="@+id/pixelWriteHello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/pixelWriteHello" />
+
+    <Button
+        android:id="@+id/pixelWriteButton"
+        style="@style/ButtonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/pixelBackButton"
+        android:layout_below="@+id/pixelWriteHello"
+        android:layout_marginTop="23dp"
+        android:background="@drawable/btn_green"
+        android:text="@string/pixelWriteButtonString" />
+
+    <Button
+        android:id="@+id/pixelBackButton"
+        style="@style/ButtonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/PixelStatusLabel"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/btn_black"
+        android:text="@string/pixelBackButtonString" />
+
+    <TextView
+        android:id="@+id/PixelStatusLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/pixelBackButton"
+        android:layout_alignParentBottom="true"
+        android:text="PIXEL Status:" />
+    
+     <TextView
+        android:id="@+id/PixelStatusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/pixelWriteButton"
+        android:layout_below="@+id/pixelBackButton"
+        android:background="@color/red"
+        android:text="Not Connected" />
+
+</RelativeLayout>

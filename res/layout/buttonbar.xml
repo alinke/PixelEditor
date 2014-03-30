@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:id="@+id/topbar"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        layout="@layout/topbar" />
+
+    <LinearLayout
+        android:id="@+id/surfaceholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/topbar"
+        android:layout_above="@+id/scroll_buttonbarz"
+        android:background="#119" />
+
+    <include
+        android:id="@+id/shapesmenu"
+        android:layout_above="@+id/scroll_buttonbarz"
+	   	android:layout_width="wrap_content"
+	   	android:layout_height="wrap_content"
+        layout="@layout/shapesmenu"
+         />
+
+    <include
+        android:id="@+id/scroll_buttonbarz"
+		android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:scrollbars="none"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        layout="@layout/actual_buttonbar" />
+
+</RelativeLayout>

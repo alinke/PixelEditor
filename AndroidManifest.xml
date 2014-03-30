@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.ledpixelart.pixelesque"
+      android:versionCode="7"
+      android:versionName="1.1.0">
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="10" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:hardwareAccelerated="true"
+    			android:theme="@style/Theme.Pixelesque">
+        <activity android:name=".PixelArtEditor"
+                  android:label="@string/app_name"
+                  android:hardwareAccelerated="true"
+                  android:configChanges="orientation"
+                  android:theme="@style/Theme.Pixelesque">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ArtListActivity"
+                  android:configChanges="orientation" />
+        <activity android:name="de.devmil.common.ui.color.ColorSelectorActivity"
+                  android:configChanges="orientation"
+                  android:theme="@style/myBackgroundStyle" />
+         
+         <activity android:name=".PIXELWrite" />
+         <activity android:name=".preferences"  android:screenOrientation="portrait"></activity>
+
+    </application>
+</manifest>

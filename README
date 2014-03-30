@@ -1,0 +1,29 @@
+Pixelesque
+----------
+
+Pixelesque, the most awesomest pixel art editor for android ever.
+
+
+Building
+--------
+
+So you want to build Pixelesque? It's pretty easy.
+
+get my multitouch android library:
+https://github.com/rjmarsan/AndroidProcessingMultitouch
+
+add it to eclipse
+add Pixelesque to eclipse, and re-add them as library projects.
+
+That should be it.
+
+
+
+License
+-------
+
+Pixelesque's source code is BSD licensed
+However, all the artwork, and the name Pixelesque, is licensed creative commons by-nc-sa http://creativecommons.org/licenses/by-nc-sa/3.0/
+
+
+

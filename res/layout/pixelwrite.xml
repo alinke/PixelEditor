@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TextView  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="@string/pixelWriteHello"
+    />
+
+<Button android:text="@string/pixelWriteButtonString" android:id="@+id/pixelWriteButton" android:background="@drawable/btn_green" style="@style/ButtonText"></Button>
+<Button android:text="@string/pixelBackButtonString" android:id="@+id/pixelBackButton" android:background="@drawable/btn_black" style="@style/ButtonText"></Button>
+
+</LinearLayout>

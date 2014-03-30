@@ -1,0 +1,37 @@
+nondestructive resize/move
+eyedropper
+import
+outlines of shapes
+bigger sizes?
+	infinite history until memory complaint?
+social/sharing site
+
+
+
+background to show transparency/black
+	adding an image to that to sketch over
+auto save on app destroy
+long-touch on grid selects color
+touching preview toggles from small-large-both
+nondestructive resize/move
+export to facebook
+export as original size
+
+
+
+pro tools:
+	non destructive resize/move
+	auto import image (not as background)
+
+
+
+import activity
+	camera or image
+	adjust pixel size
+editor activity
+	control foreground transparancy/toggle
+
+Camera
+	automatically pixelate
+		gradient algorithms for better pixelating
+	import into pixelesque

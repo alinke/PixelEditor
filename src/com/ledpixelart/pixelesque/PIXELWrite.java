@@ -79,7 +79,7 @@ public class PIXELWrite extends IOIOActivity   {
 	private Context ioio_context;
 	private boolean PIXELWriteImmediately_;
 	private int demoPIXEL = 0; //0 means normal pixel, 1 means demo 32 pixel (no writing), 2 means demo 64 pixel (no writing)
-    
+	private boolean AutoSelectPanel_ = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -313,43 +313,106 @@ private void setPreferences() //here is where we read the shared preferences int
  
  if (demoPIXEL == 0) { //otherwise we will set this from ioiosetup once we know which matrix from teh firmware we need to default to
  
-	 switch (matrix_model) {  //get this from the preferences
-	 case 0:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
-		 break;
-	 case 1:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
-		 break;
-	 case 2:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; //v1
-		 break;
-	 case 3:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2
-		 break;
-	 case 4:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
-		 break;
-	 case 5:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
-		 break;	 
-	 case 6:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
-		 break;	 	 
-	 case 7:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
-		 break;
-	 case 8:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; //horizontal
-		 break;	 
-	 case 9:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
-		 break;	 
-	 case 10:
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
-		 break;	 	 		 
-	 default:	    		 
-		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
-	 }
+	 AutoSelectPanel_ = prefs.getBoolean("pref_AutoSelectPanel", true);
+     
+     if (AutoSelectPanel_ && pixelHardwareID.substring(0,4).equals("PIXL") && !pixelFirmware.substring(4,5).equals("0")) { // PIXL0008 or PIXL0009 is the normal so if it's just a 0 for the 5th character, then we don't go here
+	    	
+    	 	//let's first check if we have a matching firmware to auto-select and if not, we'll just go what the matrix from preferences
+	  
+	  		if (pixelHardwareID.substring(4,5).equals("Q")) {
+    	 		matrix_model = 11;
+    	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
+    	 	}
+    	 	else if (pixelHardwareID.substring(4,5).equals("T")) {
+    	 		matrix_model = 14;
+    	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x64;
+    	 	}
+    	 	else if (pixelHardwareID.substring(4,5).equals("I")) {
+    	 		matrix_model = 1; 
+    	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
+    	 	}
+    	 	else if (pixelHardwareID.substring(4,5).equals("L")) { //low power
+    	 		matrix_model = 1; 
+    	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
+    	 	}
+    	 	else if (pixelHardwareID.substring(4,5).equals("C")) {
+    	 		matrix_model = 12; 
+    	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32_ColorSwap;
+    	 	}
+    	 	else if (pixelHardwareID.substring(4,5).equals("R")) {
+    	 		matrix_model = 13; 
+    	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x32;
+    	 	}
+    	 	else if (pixelHardwareID.substring(4,5).equals("M")) { //low power
+    	 		 matrix_model = 3;
+    	 		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; 
+    	 	}
+    	 	else if (pixelHardwareID.substring(4,5).equals("N")) { //low power
+    	 		 matrix_model = 11;
+    	 		 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32; 
+    	 	}
+    	 	else {  //in theory, we should never go here
+    	 		KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
+    	 	}
+  		}	
+  
+       else {
+	     switch (matrix_model) {  //get this from the preferences
+		     case 0:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x16;
+		    	 break;
+		     case 1:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x16;
+		    	 break;
+		     case 2:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32_NEW; 
+		    	 break;
+		     case 3:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; 
+		    	 break;
+		     case 4:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x32; 
+		    	 break;
+		     case 5:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x64; 
+		    	 break;	 
+		     case 6:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_2_MIRRORED; 
+		    	 break;	 	 
+		     case 7: //this one doesn't work and we don't use it rigth now
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_4_MIRRORED;
+		    	 break;
+		     case 8:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_128x32; 
+		    	 break;	 
+		     case 9:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x128; //vertical mount
+		    	 break;	 
+		     case 10:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_64x64;
+		    	 break;
+		     case 11:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32;
+		    	 break;	 
+		     case 12:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x32_ColorSwap;
+		    	 break;	 	 
+		     case 13:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x32;
+		    	 break;	
+		     case 14:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x64;
+		    	 break;
+		     case 15:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_128x32;
+		    	 break;	 	 	
+		     case 16:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x128;
+		    	 break;	 	 	
+		     default:	    		 
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
+		     }
+    	 }
  }
  
  //***** we're hard setting the LED matrix if it's a pixel unit with demo firmware
@@ -486,11 +549,38 @@ private void showNotFound() {
 
   		@Override
   		protected void setup() throws ConnectionLostException {
-  			matrix_ = ioio_.openRgbLedMatrix(KIND);
+  			//matrix_ = ioio_.openRgbLedMatrix(KIND);
   			deviceFound = 1; //if we went here, then we are connected over bluetooth or USB
   			connectTimer.cancel(); //we can stop this since it was found
   			
-  		//**** let's get IOIO version info for the About Screen ****
+  		
+  			 if (AutoSelectPanel_ && pixelHardwareID.substring(0,4).equals("PIXL") && !pixelHardwareID.substring(4,5).equals("0")) { //only go here if we have a firmware that is set to auto-detect, otherwise we can skip this
+ 	  			runOnUiThread(new Runnable() 
+ 	  			{
+ 	  			   public void run() 
+ 	  			   {
+ 	  				   
+ 	  				   setPreferences();
+ 	  				   
+ 	  				   try {
+ 	  					 matrix_ = ioio_.openRgbLedMatrix(KIND);
+ 					} catch (ConnectionLostException e) {
+ 						// TODO Auto-generated catch block
+ 						e.printStackTrace();
+ 					}
+ 	  			      
+ 	  			   }
+ 	  			}); 
+ 			}
+ 		   
+ 		   else { //we didn't auto-detect so just go the normal way
+ 			  matrix_ = ioio_.openRgbLedMatrix(KIND);
+ 		   }
+  			
+  			
+  			
+  			
+  			//**** let's get IOIO version info for the About Screen ****
   			pixelFirmware = ioio_.getImplVersion(v.APP_FIRMWARE_VER);
   			pixelBootloader = ioio_.getImplVersion(v.BOOTLOADER_VER);
   			pixelHardwareID = ioio_.getImplVersion(v.HARDWARE_VER);

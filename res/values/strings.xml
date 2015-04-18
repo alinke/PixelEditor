@@ -26,6 +26,11 @@
     
     <string name="share_image">Share Image</string>
     
+     <string name="AutoSelectPanel">Auto Select PIXEL / LED Panel</string>    
+    <string name="pref_AutoSelectPanel">pref_AutoSelectPanel</string>
+    <string name="pref_AutoSelectPanelDefault">true</string>
+    <string name="AutoSelectPanelSummary">Turn this off if you want to manually select the LED panel</string>
+    
     <string name="new_title">Pick a size</string>
     <string name="new_button_new">New</string>
     <string name="new_button_cancel">Cancel</string>
@@ -82,27 +87,13 @@
     <string name="prefTitle">PIXEL Editor Settings</string>
     <string name="menu_prefs_title">Settings</string>
     <string name="prefSummary">PIXEL Editor Settings</string>
-    
-	<string name="versionString">App Version</string> 
-    <string name="BootloaderVersionString">Bootloader Version</string> 
-    <string name="FirmwareVersionString">Firmware Version</string> 
-    <string name="LibraryVersionString">Library Version</string> 
-    <string name="HardwareVersionString">Hardware Version</string> 
-    
-   <string name="oneTimeSetupString">One Time Setup: Copying stock images to your SD card.</string> 
-   <string name="bluetoothPairingString">Please ensure Bluetooth pairing has been completed prior. The Bluetooth pairing code is: 0000 for PIXEL V2 and 4545 for PIXEL V1."</string> 
-    
-   
-   <string name="menu_instructions_title">Instructions</string>
-   <string name="setupInstructionsString">Pair your Android device to PIXEL which will show up as \'PIXEL\' in Bluetooth using code 0000 for PIXEL V2 and 4545 for PIXEL V1.</string>
-   <string name="setupInstructionsStringTitle">Instructions</string>   
 	
     <string name="OKText">OK</string>   
     <string name="notFoundString">PIXEL Not Found</string>   
     
 	<string name="selected_matrix">selected_matrix</string>
-    <string name="matrix">LED Panel Selection</string>
-    <string name="matrixSummary">Select your LED Panel Model</string>    
+    <string name="matrix">PIXEL Model</string>
+    <string name="matrixSummary">Select your PIXEL Model/LED Panel Model</string>    
     <string name="dialogTitleMatrix">LED Panel Selection</string>
     <string name="matrix_default_value">3</string>   
     

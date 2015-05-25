@@ -408,7 +408,10 @@ private void setPreferences() //here is where we read the shared preferences int
 		    	 break;	 	 	
 		     case 16:
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_32x128;
-		    	 break;	 	 	
+		    	 break;	
+		     case 17:
+		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.ADAFRUIT_64x16;
+		    	 break;	
 		     default:	    		 
 		    	 KIND = ioio.lib.api.RgbLedMatrix.Matrix.SEEEDSTUDIO_32x32; //v2 as the default
 		     }

@@ -101,7 +101,7 @@
     <string name="bluetooth_pairSummary">Shortcut to the Bluetooth settings screen. Pair to PIXEL using code: 4545 for PIXEL V1 or 0000 for PIXEL V2</string>
     <string name="pixelWriteHello">After a short delay, your creation will display on PIXEL: LED ART. Tap the Back button to make additional edits.</string>
   
-    <string name="noSleep">Disable Power Savings</string>    
+    <string name="noSleep">Force App On</string>    
     <string name="pref_noSleepDefault">false</string>
     <string name="noSleepSummary">Forces the app to be always on, your device will not go into power savings mode while this app is running. Good if using as a Kiosk for example. </string>
     

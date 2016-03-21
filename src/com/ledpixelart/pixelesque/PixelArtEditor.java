@@ -118,7 +118,9 @@ public class PixelArtEditor extends PApplet implements TouchListener, Drawer {
 	
 	public void figureOutOrientation() {
 		if (isHorizontal()) {
-			setRequestedOrientation(6 /*ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE*/);
+			//setRequestedOrientation(6 /*ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE*/);
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
 		} else {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}

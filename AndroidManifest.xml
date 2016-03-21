@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.ledpixelart.pixelesque"
-      android:versionCode="10"
-      android:versionName="2.1">
+      android:versionCode="13"
+      android:versionName="2.4">
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="11" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -26,7 +26,7 @@
                   android:theme="@style/myBackgroundStyle" />
          
          <activity android:name=".PIXELWrite" />
-         <activity android:name=".preferences"  android:screenOrientation="portrait"></activity>
+         <activity android:name=".preferences"  android:screenOrientation="landscape"></activity>
 
     </application>
 </manifest>

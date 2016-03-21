@@ -84,7 +84,8 @@ public class PIXELWrite extends IOIOActivity   {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //force only portrait mode
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //force only portrait mode
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); //force only portrait mode
         setContentView(R.layout.pixelwriterelative);
         
         //let's get the extra from the class that call us 
@@ -148,6 +149,7 @@ public class PIXELWrite extends IOIOActivity   {
     public void addListenerWriteButton() {
     	
     	writeButton = (Button) findViewById(R.id.pixelWriteButton);
+    	//writeButton.setVisibility(View.INVISIBLE); // to do comment this out, it's for kiosk mode
     	
     	if (PIXELWriteImmediately_ == false) { //still show button even if we have a demo unit, we'll show a message to the user if they clicked it that this is a demo unit that normally would support writing
 	    	
@@ -310,6 +312,7 @@ private void setPreferences() //here is where we read the shared preferences int
 	        resources.getString(R.string.matrix_default_value))); 
  
  PIXELWriteImmediately_ = prefs.getBoolean("pref_pixelWriteImmediate", true);
+ //PIXELWriteImmediately_ = false;  //to do for kiosk mode uncomment out
  
  if (demoPIXEL == 0) { //otherwise we will set this from ioiosetup once we know which matrix from teh firmware we need to default to
  
@@ -665,7 +668,9 @@ private void showNotFound() {
 	@Override
 	public void disconnected() {   			
 			Log.i(LOG_TAG, "IOIO disconnected");
-			setTextDisconnected("Not Connected");
+			//setTextDisconnected("Not Connected");
+			setTextDisconnected("Connecting...");
+
 			
 	}
 	
